@@ -1,0 +1,80 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  html.dark {
+    color-scheme: dark;
+  }
+
+  body {
+    background-color: #F4F6FA;
+    color: #1E293B;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  html.dark body {
+    background-color: #070B14;
+    color: #F1F5F9;
+  }
+
+  /* Custom Light/Dark Scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #CBD5E1;
+    border-radius: 9999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #94A3B8;
+  }
+  html.dark ::-webkit-scrollbar-thumb {
+    background: #1E293B;
+  }
+}
+
+@keyframes flashUp {
+  0% { background-color: rgba(16, 185, 129, 0.25); color: #059669; }
+  100% { background-color: transparent; color: inherit; }
+}
+
+@keyframes flashDown {
+  0% { background-color: rgba(239, 68, 68, 0.25); color: #DC2626; }
+  100% { background-color: transparent; color: inherit; }
+}
+
+@keyframes pulseGlow {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(1.15); }
+}
+
+@keyframes ring {
+  0%, 100% { transform: rotate(0deg); }
+  20%, 60% { transform: rotate(12deg); }
+  40%, 80% { transform: rotate(-12deg); }
+}
+
+.animate-flash-up {
+  animation: flashUp 0.8s ease-out forwards;
+}
+
+.animate-flash-down {
+  animation: flashDown 0.8s ease-out forwards;
+}
+
+.animate-pulse-glow {
+  animation: pulseGlow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.animate-ring {
+  animation: ring 1.5s ease-in-out infinite;
+}
