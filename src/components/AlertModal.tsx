@@ -2,17 +2,20 @@ import React, { useState, useEffect } from 'react';
 import { useMarket } from '../context/MarketContext';
 import { Stock } from '../types/market';
 import { X, Bell, TrendingUp, TrendingDown, ArrowRight, ShieldCheck } from 'lucide-react';
+import { formatCurrency, getCurrencySymbol } from '../utils/currency';
 
 interface AlertModalProps {
   isOpen: boolean;
   onClose: () => void;
   initialStock?: Stock | null;
+  currency?: 'USD' | 'IDR';
 }
 
 export const AlertModal: React.FC<AlertModalProps> = ({
   isOpen,
   onClose,
   initialStock,
+  currency = 'USD',
 }) => {
   const { stocks, createAlertRule } = useMarket();
 
@@ -102,7 +105,7 @@ export const AlertModal: React.FC<AlertModalProps> = ({
               <div>
                 <span className="text-slate-400">Current Market Price:</span>
                 <span className="font-mono font-bold text-slate-100 ml-2">
-                  ${selectedStock.price.toFixed(2)}
+                  {formatCurrency(selectedStock.price, currency)}
                 </span>
               </div>
               <span
@@ -152,11 +155,11 @@ export const AlertModal: React.FC<AlertModalProps> = ({
           {/* Target Price */}
           <div>
             <label className="block text-xs font-mono uppercase text-slate-400 mb-1.5">
-              Target Price ($ USD)
+              Target Price ({getCurrencySymbol(currency)})
             </label>
             <div className="relative">
               <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 font-mono">
-                $
+                {getCurrencySymbol(currency)}
               </span>
               <input
                 type="number"

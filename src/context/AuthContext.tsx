@@ -32,16 +32,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } catch {
       // ignore
     }
-    // Default demo profile for seamless experience
-    return {
-      id: 'user_alex_morgan_01',
-      name: 'Alex Morgan',
-      email: 'alex.morgan@tickerstorm.io',
-    };
+    return null;
   });
 
   const [token, setToken] = useState<string | null>(() => {
-    return localStorage.getItem('tickerstorm_token') || 'demo_token_alex_morgan';
+    return localStorage.getItem('tickerstorm_token');
   });
 
   const [isLoading, setIsLoading] = useState(false);
