@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { ArrowUpRight, ArrowDownRight, Clock, Activity, Coins } from 'lucide-react';
 import { Stock } from '../types/market';
 import { Sparkline } from './Sparkline';
+import { formatCurrency, getCurrencySymbol } from '../utils/currency';
 
 interface Row3Props {
   stocks: Stock[];
@@ -50,15 +51,10 @@ export const Row3WatchlistAndCrypto: React.FC<Row3Props> = ({
 
   // Currency formatting helper
   const formatCrypto = (price: number, symbol: 'BTC' | 'DOGE') => {
-    if (currency === 'IDR') {
-      if (symbol === 'BTC') return 'Rp 459,852'; // Reference specification exact figure
-      return 'Rp 987,226'; // Reference specification exact figure
-    }
-    // USD
-    if (symbol === 'BTC') {
-      return `$${(price || 64850).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-    }
-    return `$${(price || 0.1425).toFixed(4)}`;
+    return formatCurrency(price || (symbol === 'BTC' ? 64850 : 0.1425), currency, {
+      minimumFractionDigits: symbol === 'BTC' ? 0 : 2,
+      maximumFractionDigits: symbol === 'BTC' ? 0 : 4,
+    });
   };
 
   // Live Chart SVG points
@@ -96,7 +92,7 @@ export const Row3WatchlistAndCrypto: React.FC<Row3Props> = ({
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6 mt-6">
       {/* 1. Main Watchlist Panel (8 cols) */}
-      <div className="lg:col-span-8 bg-white dark:bg-[#111827] rounded-2xl p-5 border border-slate-200/80 dark:border-slate-800 shadow-card flex flex-col justify-between">
+      <div className="lg:col-span-8 bg-white dark:bg-[#111827] rounded-xl p-5 border border-slate-200 dark:border-slate-700 flex flex-col justify-between">
         {/* Top Controls & Ticker Tabs */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100 dark:border-slate-800">
           {/* Asset Tickers Selector */}
@@ -157,7 +153,7 @@ export const Row3WatchlistAndCrypto: React.FC<Row3Props> = ({
             </div>
             <div className="flex items-baseline gap-3 mt-1">
               <span className="text-3xl lg:text-4xl font-extrabold text-slate-900 dark:text-white font-mono tracking-tight">
-                ${activeStock.price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                {formatCurrency(activeStock.price, currency)}
               </span>
               <span
                 className={`inline-flex items-center gap-0.5 px-2.5 py-0.5 rounded-full text-xs font-bold ${
@@ -175,11 +171,11 @@ export const Row3WatchlistAndCrypto: React.FC<Row3Props> = ({
           <div className="flex items-center gap-4 text-xs text-slate-500 dark:text-slate-400 font-mono">
             <div>
               <span className="block text-[10px] text-slate-400 uppercase font-sans">24h High</span>
-              <span className="font-bold text-slate-700 dark:text-slate-200">${activeStock.high?.toFixed(2) || '4,515.20'}</span>
+              <span className="font-bold text-slate-700 dark:text-slate-200">{formatCurrency(activeStock.high || 4515.20, currency)}</span>
             </div>
             <div>
               <span className="block text-[10px] text-slate-400 uppercase font-sans">24h Low</span>
-              <span className="font-bold text-slate-700 dark:text-slate-200">${activeStock.low?.toFixed(2) || '4,410.50'}</span>
+              <span className="font-bold text-slate-700 dark:text-slate-200">{formatCurrency(activeStock.low || 4410.50, currency)}</span>
             </div>
             <div>
               <span className="block text-[10px] text-slate-400 uppercase font-sans">Volume</span>
@@ -193,14 +189,6 @@ export const Row3WatchlistAndCrypto: React.FC<Row3Props> = ({
         {/* Live Area Chart */}
         <div className="relative w-full h-[220px]">
           <svg viewBox={`0 0 ${chartWidth} ${chartHeight}`} className="w-full h-full overflow-visible">
-            <defs>
-              <linearGradient id="liveEmeraldGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#10B981" stopOpacity="0.30" />
-                <stop offset="70%" stopColor="#10B981" stopOpacity="0.05" />
-                <stop offset="100%" stopColor="#10B981" stopOpacity="0.0" />
-              </linearGradient>
-            </defs>
-
             {/* Subtle horizontal guideline */}
             <line
               x1={padX}
@@ -212,8 +200,8 @@ export const Row3WatchlistAndCrypto: React.FC<Row3Props> = ({
               strokeDasharray="4 4"
             />
 
-            {/* Gradient Fill */}
-            <path d={areaPath} fill="url(#liveEmeraldGrad)" />
+            {/* Solid Fill */}
+            <path d={areaPath} fill="#10B981" fillOpacity="0.12" />
 
             {/* Real-Time Line */}
             <path
@@ -225,19 +213,19 @@ export const Row3WatchlistAndCrypto: React.FC<Row3Props> = ({
               strokeLinejoin="round"
             />
 
-            {/* Glowing endpoint */}
+            {/* Endpoint */}
             {chartPoints.length > 0 && (
               <g>
                 <circle
                   cx={chartPoints[chartPoints.length - 1].x}
                   cy={chartPoints[chartPoints.length - 1].y}
-                  r="6"
-                  className="fill-emerald-500 animate-pulse"
+                  r="5"
+                  className="fill-emerald-500"
                 />
                 <circle
                   cx={chartPoints[chartPoints.length - 1].x}
                   cy={chartPoints[chartPoints.length - 1].y}
-                  r="3"
+                  r="2.5"
                   className="fill-white"
                 />
               </g>
@@ -249,7 +237,7 @@ export const Row3WatchlistAndCrypto: React.FC<Row3Props> = ({
       {/* 2. Side Crypto / Asset Cards (4 cols) */}
       <div className="lg:col-span-4 flex flex-col justify-between gap-4">
         {/* Bitcoin Card */}
-        <div className="bg-white dark:bg-[#111827] rounded-2xl p-5 border border-slate-200/80 dark:border-slate-800 shadow-card flex-1 flex flex-col justify-between hover:border-amber-500/40 transition-all">
+        <div className="bg-white dark:bg-[#111827] rounded-xl p-5 border border-slate-200 dark:border-slate-700 flex-1 flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-950/50 text-amber-500 flex items-center justify-center font-bold text-lg shadow-sm">
@@ -297,7 +285,7 @@ export const Row3WatchlistAndCrypto: React.FC<Row3Props> = ({
         </div>
 
         {/* Dogecoin Card */}
-        <div className="bg-white dark:bg-[#111827] rounded-2xl p-5 border border-slate-200/80 dark:border-slate-800 shadow-card flex-1 flex flex-col justify-between hover:border-yellow-500/40 transition-all">
+        <div className="bg-white dark:bg-[#111827] rounded-xl p-5 border border-slate-200 dark:border-slate-700 flex-1 flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-yellow-50 dark:bg-yellow-950/50 text-yellow-600 dark:text-yellow-400 flex items-center justify-center font-bold text-lg shadow-sm">

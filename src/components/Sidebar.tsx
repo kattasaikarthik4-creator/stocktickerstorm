@@ -9,7 +9,6 @@ import {
   Zap,
   ChevronLeft,
   ChevronRight,
-  ShieldCheck,
   LogIn,
   User,
 } from 'lucide-react';
@@ -43,14 +42,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
   return (
     <aside
-      className={`fixed top-0 left-0 h-screen z-40 bg-[#1E1638] dark:bg-[#130E24] text-slate-300 transition-all duration-300 flex flex-col justify-between border-r border-[#2A1F4E] ${
+      className={`fixed top-0 left-0 h-screen z-40 bg-[#1E1638] dark:bg-[#130E24] text-slate-300 flex flex-col justify-between border-r border-[#2A1F4E] ${
         isCollapsed ? 'w-20' : 'w-64'
       }`}
     >
       {/* Top Branding Section */}
       <div>
         <div className="h-16 flex items-center px-5 border-b border-[#2A1F4E]/60 gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-300 flex items-center justify-center text-slate-950 font-extrabold shadow-lg shadow-emerald-500/20 flex-shrink-0">
+          <div className="w-10 h-10 rounded-xl bg-emerald-500 flex items-center justify-center text-slate-950 font-extrabold shadow-lg flex-shrink-0">
             <Zap className="w-5 h-5 fill-slate-950 text-slate-950" />
           </div>
           {!isCollapsed && (
@@ -76,9 +75,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 key={item.id}
                 onClick={() => onSelectNav(item.id)}
                 title={isCollapsed ? item.label : undefined}
-                className={`w-full flex items-center gap-3.5 px-3.5 py-3 rounded-xl font-medium text-sm transition-all duration-150 relative ${
+                className={`w-full flex items-center gap-3.5 px-3.5 py-3 rounded-xl font-medium text-sm relative ${
                   isActive
-                    ? 'bg-emerald-500 text-slate-950 font-bold shadow-md shadow-emerald-500/20'
+                    ? 'bg-emerald-500 text-slate-950 font-bold'
                     : 'text-slate-300 hover:text-white hover:bg-[#2A1F4E]/70'
                 }`}
               >
@@ -109,39 +108,32 @@ export const Sidebar: React.FC<SidebarProps> = ({
       <div className="p-3 border-t border-[#2A1F4E]/60 space-y-2">
         {/* User Status / Quick Login Button */}
         {!isCollapsed ? (
-          isAuthenticated && user ? (
-            <div
-              onClick={() => openAuthModal('login')}
-              className="bg-[#2A1F4E]/50 hover:bg-[#2A1F4E] rounded-xl p-2.5 flex items-center gap-2.5 border border-[#3B2D6B]/40 cursor-pointer transition-colors"
-              title="Click to Switch User"
-            >
-              <img
-                src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80"
-                alt={user.name}
-                className="w-8 h-8 rounded-lg object-cover ring-1 ring-emerald-500/50 flex-shrink-0"
-              />
+          isAuthenticated ? (
+            <div className="bg-[#2A1F4E]/50 rounded-xl p-2.5 flex items-center gap-2.5 border border-[#3B2D6B]/40">
+              <div className="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center flex-shrink-0">
+                <User className="w-4 h-4 text-emerald-400" />
+              </div>
               <div className="text-xs min-w-0 flex-1">
-                <div className="text-white font-bold truncate">{user.name}</div>
-                <div className="text-[10px] text-emerald-400 flex items-center gap-1">
-                  <ShieldCheck className="w-3 h-3" />
-                  <span>Verified Session</span>
+                <div className="text-white font-bold truncate">Signed In</div>
+                <div className="text-[10px] text-emerald-400">
+                  <span>Active Session</span>
                 </div>
               </div>
             </div>
           ) : (
             <button
               onClick={() => openAuthModal('login')}
-              className="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold p-2.5 rounded-xl text-xs flex items-center justify-center gap-2 transition-all shadow-md shadow-emerald-500/20"
+              className="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold p-2.5 rounded-xl text-xs flex items-center justify-center gap-2"
             >
               <LogIn className="w-4 h-4" />
-              <span>Sign In / Register</span>
+              <span>Sign In</span>
             </button>
           )
         ) : (
           <button
             onClick={() => openAuthModal('login')}
-            className="w-full flex items-center justify-center p-2.5 rounded-xl text-purple-300 hover:text-white hover:bg-[#2A1F4E]/70 transition-colors"
-            title={isAuthenticated ? user?.name : 'Sign In'}
+            className="w-full flex items-center justify-center p-2.5 rounded-xl text-purple-300 hover:text-white hover:bg-[#2A1F4E]/70"
+            title={isAuthenticated ? 'Signed In' : 'Sign In'}
           >
             {isAuthenticated ? <User className="w-5 h-5 text-emerald-400" /> : <LogIn className="w-5 h-5" />}
           </button>
@@ -150,7 +142,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         {/* Collapsible Toggle Button */}
         <button
           onClick={onToggleCollapse}
-          className="w-full flex items-center justify-center p-2 rounded-xl text-purple-300 hover:text-white hover:bg-[#2A1F4E]/70 transition-colors"
+          className="w-full flex items-center justify-center p-2 rounded-xl text-purple-300 hover:text-white hover:bg-[#2A1F4E]/70"
           title={isCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
         >
           {isCollapsed ? <ChevronRight className="w-5 h-5" /> : <ChevronLeft className="w-5 h-5" />}

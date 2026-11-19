@@ -22,6 +22,7 @@ import {
 import { Stock } from '../types/market';
 import { Sparkline } from './Sparkline';
 import { useAuth } from '../context/AuthContext';
+import { formatCurrency } from '../utils/currency';
 
 interface PortfolioHolding {
   symbol: string;
@@ -37,20 +38,22 @@ const INITIAL_HOLDINGS: PortfolioHolding[] = [
   { symbol: 'MSFT', name: 'Microsoft Corporation', shares: 6, avgBuyPrice: 395.00, category: 'Equities' },
   { symbol: 'SPY', name: 'S&P 500 Index ETF', shares: 5, avgBuyPrice: 4380.00, category: 'Funds' },
   { symbol: 'BTC', name: 'Bitcoin', shares: 0.045, avgBuyPrice: 58200.00, category: 'Crypto' },
-  { symbol: 'LYZ', name: 'Layzoo Ltd.', shares: 10, avgBuyPrice: 128.00, category: 'Equities' },
-  { symbol: 'NBL', name: 'NightBlink Ltd.', shares: 10, avgBuyPrice: 104.50, category: 'Equities' },
+  { symbol: 'GOOGL', name: 'Alphabet Inc.', shares: 8, avgBuyPrice: 142.00, category: 'Equities' },
+  { symbol: 'AMZN', name: 'Amazon.com Inc.', shares: 6, avgBuyPrice: 155.00, category: 'Equities' },
 ];
 
 interface PortfolioViewProps {
   stockMap: Map<string, Stock>;
   onSelectStock?: (stock: Stock) => void;
   onOpenAlertModalForStock?: (stock: Stock) => void;
+  currency?: 'USD' | 'IDR';
 }
 
 export const PortfolioView: React.FC<PortfolioViewProps> = ({
   stockMap,
   onSelectStock,
   onOpenAlertModalForStock,
+  currency = 'USD',
 }) => {
   const { user } = useAuth();
   const [holdings, setHoldings] = useState<PortfolioHolding[]>(INITIAL_HOLDINGS);
@@ -143,7 +146,7 @@ export const PortfolioView: React.FC<PortfolioViewProps> = ({
   return (
     <div className="space-y-6 animate-fadeIn pb-12">
       {/* 1. Portfolio Hero & Live Metrics Header */}
-      <div className="bg-gradient-to-r from-white via-slate-50 to-white dark:from-[#111827] dark:via-[#131c30] dark:to-[#111827] rounded-3xl p-6 lg:p-8 border border-slate-200/80 dark:border-slate-800 shadow-card">
+      <div className="bg-white dark:bg-[#111827] rounded-3xl p-6 lg:p-8 border border-slate-200/80 dark:border-slate-800 shadow-card">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
           <div>
             <div className="flex items-center gap-2 mb-1.5">
@@ -157,11 +160,11 @@ export const PortfolioView: React.FC<PortfolioViewProps> = ({
             </div>
             <div className="flex items-baseline gap-4">
               <h1 className="text-3xl lg:text-5xl font-black text-slate-900 dark:text-white tracking-tight font-mono">
-                ${totalNetWorth.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                {formatCurrency(totalNetWorth, currency)}
               </h1>
               <div className="flex items-center gap-1.5 text-sm font-bold text-emerald-600 dark:text-emerald-400">
                 <ArrowUpRight className="w-4 h-4 stroke-[2.5]" />
-                <span>+${totalDayGain.toFixed(2)} ({totalDayGainPercent >= 0 ? '+' : ''}{totalDayGainPercent.toFixed(2)}% Today)</span>
+                <span>+{formatCurrency(totalDayGain, currency)} ({totalDayGainPercent >= 0 ? '+' : ''}{totalDayGainPercent.toFixed(2)}% Today)</span>
               </div>
             </div>
             <p className="text-xs text-slate-400 mt-1">
@@ -193,14 +196,14 @@ export const PortfolioView: React.FC<PortfolioViewProps> = ({
           <div>
             <span className="text-[11px] font-semibold text-slate-400 uppercase block">Invested Capital</span>
             <span className="text-lg lg:text-xl font-extrabold text-slate-900 dark:text-white font-mono">
-              ${totalCostBasis.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              {formatCurrency(totalCostBasis, currency)}
             </span>
           </div>
 
           <div>
             <span className="text-[11px] font-semibold text-slate-400 uppercase block">Unrealized Profit</span>
             <span className="text-lg lg:text-xl font-extrabold text-emerald-600 dark:text-emerald-400 font-mono">
-              +${totalAllTimeProfit.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              +{formatCurrency(totalAllTimeProfit, currency)}
             </span>
           </div>
 
@@ -214,16 +217,16 @@ export const PortfolioView: React.FC<PortfolioViewProps> = ({
           <div>
             <span className="text-[11px] font-semibold text-slate-400 uppercase block">Buying Power (Cash)</span>
             <span className="text-lg lg:text-xl font-extrabold text-blue-600 dark:text-blue-400 font-mono">
-              ${availableCash.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              {formatCurrency(availableCash, currency)}
             </span>
           </div>
         </div>
       </div>
 
-      {/* 2. Asset Allocation & Institutional Risk Metrics */}
+      {/* 2. Asset Allocation & Risk Metrics */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Category Breakdown Bar */}
-        <div className="lg:col-span-8 bg-white dark:bg-[#111827] rounded-3xl p-6 border border-slate-200/80 dark:border-slate-800 shadow-card">
+        <div className="lg:col-span-8 bg-white dark:bg-[#111827] rounded-xl p-5 border border-slate-200 dark:border-slate-700">
           <div className="flex items-center justify-between mb-4">
             <div>
               <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
@@ -282,7 +285,7 @@ export const PortfolioView: React.FC<PortfolioViewProps> = ({
         </div>
 
         {/* Risk & Beta Exposure Card */}
-        <div className="lg:col-span-4 bg-white dark:bg-[#111827] rounded-3xl p-6 border border-slate-200/80 dark:border-slate-800 shadow-card flex flex-col justify-between">
+        <div className="lg:col-span-4 bg-white dark:bg-[#111827] rounded-xl p-5 border border-slate-200 dark:border-slate-700 flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between mb-3">
               <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
@@ -320,7 +323,7 @@ export const PortfolioView: React.FC<PortfolioViewProps> = ({
       </div>
 
       {/* 3. Real-Time Holdings Table */}
-      <div className="bg-white dark:bg-[#111827] rounded-3xl p-6 border border-slate-200/80 dark:border-slate-800 shadow-card">
+      <div className="bg-white dark:bg-[#111827] rounded-xl p-5 border border-slate-200 dark:border-slate-700">
         {/* Table Top Controls */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
           <div>
@@ -399,17 +402,17 @@ export const PortfolioView: React.FC<PortfolioViewProps> = ({
 
                     {/* Avg Buy Price */}
                     <td className="py-3.5 px-3 text-right font-mono text-slate-500">
-                      ${pos.avgBuyPrice.toFixed(2)}
+                      {formatCurrency(pos.avgBuyPrice, currency)}
                     </td>
 
                     {/* Live Market Price with Real-time tick */}
                     <td className="py-3.5 px-3 text-right font-mono font-bold text-slate-900 dark:text-white">
-                      ${pos.currentPrice.toFixed(2)}
+                      {formatCurrency(pos.currentPrice, currency)}
                     </td>
 
                     {/* Total Position Value */}
                     <td className="py-3.5 px-3 text-right font-mono font-bold text-slate-900 dark:text-white">
-                      ${pos.totalCurrentValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      {formatCurrency(pos.totalCurrentValue, currency)}
                     </td>
 
                     {/* 24h P&L */}
@@ -422,7 +425,7 @@ export const PortfolioView: React.FC<PortfolioViewProps> = ({
                     {/* Total Unrealized Return */}
                     <td className="py-3.5 px-3 text-right font-mono">
                       <div className={`font-bold ${isGain ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}`}>
-                        {isGain ? '+' : ''}${pos.unrealizedPL.toFixed(2)}
+                        {isGain ? '+' : ''}{formatCurrency(pos.unrealizedPL, currency)}
                       </div>
                       <div className={`text-[10px] ${isGain ? 'text-emerald-500' : 'text-rose-500'}`}>
                         ({isGain ? '+' : ''}{pos.unrealizedPLPercent.toFixed(1)}%)

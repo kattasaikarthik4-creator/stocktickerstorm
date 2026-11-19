@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Home, Plane, ArrowUpRight, Plus, X, Sparkles, Target, Compass } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { formatCurrency } from '../utils/currency';
 
 interface GrowthPoint {
   month: string;
@@ -75,9 +76,10 @@ const DEFAULT_TARGETS: TargetGoal[] = [
 
 interface Row2Props {
   livePortfolioValuation?: number;
+  currency?: 'USD' | 'IDR';
 }
 
-export const Row2GrowthAndDistribution: React.FC<Row2Props> = ({ livePortfolioValuation = 10125 }) => {
+export const Row2GrowthAndDistribution: React.FC<Row2Props> = ({ livePortfolioValuation = 10125, currency = 'USD' }) => {
   const { token } = useAuth();
   const [timeframe, setTimeframe] = useState<'1M' | '6M' | '1Y' | 'ALL'>('6M');
   const [hoveredPoint, setHoveredPoint] = useState<GrowthPoint | null>(null);
@@ -185,7 +187,7 @@ export const Row2GrowthAndDistribution: React.FC<Row2Props> = ({ livePortfolioVa
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6 mt-6">
       {/* 1. Large Investment Growth Area Chart (Column 1: 6 cols) */}
-      <div className="lg:col-span-6 bg-white dark:bg-[#111827] rounded-2xl p-5 border border-slate-200/80 dark:border-slate-800 shadow-card flex flex-col justify-between">
+      <div className="lg:col-span-6 bg-white dark:bg-[#111827] rounded-xl p-5 border border-slate-200 dark:border-slate-700 flex flex-col justify-between">
         <div className="flex flex-wrap items-center justify-between gap-3 mb-2">
           <div>
             <div className="flex items-center gap-2">
@@ -229,19 +231,11 @@ export const Row2GrowthAndDistribution: React.FC<Row2Props> = ({ livePortfolioVa
               }}
             >
               <div className="text-[10px] text-slate-400 font-sans">{hoveredPoint.month}</div>
-              <div className="font-bold text-emerald-400">${hoveredPoint.value.toLocaleString()}</div>
+              <div className="font-bold text-emerald-400">{formatCurrency(hoveredPoint.value, currency)}</div>
             </div>
           )}
 
           <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-full overflow-visible">
-            <defs>
-              <linearGradient id="emeraldGradientAreaDynamic" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#10B981" stopOpacity="0.32" />
-                <stop offset="60%" stopColor="#10B981" stopOpacity="0.08" />
-                <stop offset="100%" stopColor="#10B981" stopOpacity="0.00" />
-              </linearGradient>
-            </defs>
-
             {/* Subtle horizontal grid lines */}
             {[0.25, 0.5, 0.75].map((fraction) => {
               const yVal = minValue + fraction * range;
@@ -261,8 +255,8 @@ export const Row2GrowthAndDistribution: React.FC<Row2Props> = ({ livePortfolioVa
               );
             })}
 
-            {/* Gradient Area Fill */}
-            <path d={areaD} fill="url(#emeraldGradientAreaDynamic)" />
+            {/* Solid Area Fill */}
+            <path d={areaD} fill="#10B981" fillOpacity="0.12" />
 
             {/* Smooth Emerald Line */}
             <path
@@ -300,7 +294,7 @@ export const Row2GrowthAndDistribution: React.FC<Row2Props> = ({ livePortfolioVa
       </div>
 
       {/* 2. Donut Chart: Your Portfolio (Column 2: 3 cols) */}
-      <div className="lg:col-span-3 bg-white dark:bg-[#111827] rounded-2xl p-5 border border-slate-200/80 dark:border-slate-800 shadow-card flex flex-col justify-between">
+      <div className="lg:col-span-3 bg-white dark:bg-[#111827] rounded-xl p-5 border border-slate-200 dark:border-slate-700 flex flex-col justify-between">
         <div>
           <h2 className="text-base font-bold text-slate-900 dark:text-white">
             Your Portfolio
@@ -343,10 +337,9 @@ export const Row2GrowthAndDistribution: React.FC<Row2Props> = ({ livePortfolioVa
               {selectedSegment !== null ? segments[selectedSegment].name : 'Total Valuation'}
             </span>
             <span className="text-lg font-extrabold text-slate-900 dark:text-white tracking-tight font-mono">
-              ${(selectedSegment !== null
+              {formatCurrency(selectedSegment !== null
                 ? segments[selectedSegment].amount
-                : livePortfolioValuation
-              ).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+                : livePortfolioValuation, currency)}
             </span>
           </div>
         </div>
@@ -369,7 +362,7 @@ export const Row2GrowthAndDistribution: React.FC<Row2Props> = ({ livePortfolioVa
               <div className="flex items-center gap-2 font-mono">
                 <span className="text-slate-400">{seg.percent}%</span>
                 <span className="font-bold text-slate-800 dark:text-slate-200">
-                  ${Math.round(seg.amount).toLocaleString()}
+                  {formatCurrency(Math.round(seg.amount), currency)}
                 </span>
               </div>
             </div>
@@ -386,7 +379,7 @@ export const Row2GrowthAndDistribution: React.FC<Row2Props> = ({ livePortfolioVa
           return (
             <div
               key={tgt.id || index}
-              className="bg-white dark:bg-[#111827] rounded-2xl p-5 border border-slate-200/80 dark:border-slate-800 shadow-card flex-1 flex flex-col justify-between hover:border-emerald-500/40 transition-all"
+              className="bg-white dark:bg-[#111827] rounded-xl p-5 border border-slate-200 dark:border-slate-700 flex-1 flex flex-col justify-between"
             >
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-3">
@@ -404,7 +397,7 @@ export const Row2GrowthAndDistribution: React.FC<Row2Props> = ({ livePortfolioVa
                       {tgt.name}
                     </h3>
                     <span className="text-xs text-slate-400 font-mono">
-                      Goal: ${tgt.target_amount.toLocaleString()}
+                      Goal: {formatCurrency(tgt.target_amount, currency)}
                     </span>
                   </div>
                 </div>
@@ -418,7 +411,7 @@ export const Row2GrowthAndDistribution: React.FC<Row2Props> = ({ livePortfolioVa
               <div className="mt-4">
                 <div className="flex items-baseline justify-between mb-1.5">
                   <span className="text-xl font-extrabold text-slate-900 dark:text-white font-mono">
-                    ${tgt.total_value.toLocaleString()}
+                    {formatCurrency(tgt.total_value, currency)}
                   </span>
                   <span
                     className={`text-xs font-semibold ${

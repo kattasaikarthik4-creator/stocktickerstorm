@@ -100,12 +100,12 @@ export const Header: React.FC<HeaderProps> = ({
   ];
 
   return (
-    <header className="sticky top-0 z-30 bg-[#0c121e]/90 backdrop-blur-md border-b border-slate-800/80 px-4 lg:px-6 py-2.5">
+    <header className="sticky top-0 z-30 bg-[#0c121e] border-b border-slate-800 px-4 lg:px-6 py-2.5">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
         {/* Brand & Connection Status */}
         <div className="flex items-center justify-between md:justify-start gap-4">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-emerald-600 via-teal-500 to-cyan-400 flex items-center justify-center shadow-lg shadow-emerald-500/20">
+            <div className="w-8 h-8 rounded-lg bg-emerald-600 flex items-center justify-center shadow-lg">
               <span className="text-white font-extrabold text-base">⚡</span>
             </div>
             <div>
@@ -171,7 +171,7 @@ export const Header: React.FC<HeaderProps> = ({
           {/* New Alert Button */}
           <button
             onClick={onOpenAlertModal}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 hover:border-emerald-500/50 text-xs font-semibold transition"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-semibold"
             title="Create Price Threshold Alert"
           >
             <PlusCircle className="w-3.5 h-3.5" />
@@ -181,9 +181,9 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Sound Toggle */}
           <button
             onClick={() => setSoundEnabled(!soundEnabled)}
-            className={`p-2 rounded-lg border text-xs transition ${
+            className={`p-2 rounded-lg border text-xs ${
               soundEnabled
-                ? 'bg-slate-800/80 border-slate-700 text-slate-300 hover:text-white'
+                ? 'bg-slate-800 border-slate-700 text-slate-300 hover:text-white'
                 : 'bg-slate-900 border-slate-800 text-slate-600 hover:text-slate-400'
             }`}
             title={soundEnabled ? 'Mute Alert Chimes' : 'Unmute Alert Chimes'}
@@ -194,10 +194,10 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Alert Center Trigger */}
           <button
             onClick={onToggleAlertFeed}
-            className={`relative p-2 rounded-lg border text-xs transition ${
+            className={`relative p-2 rounded-lg border text-xs ${
               isAlertFeedOpen
                 ? 'bg-emerald-500/20 border-emerald-500/40 text-emerald-300'
-                : 'bg-slate-800/80 border-slate-700 text-slate-300 hover:text-white'
+                : 'bg-slate-800 border-slate-700 text-slate-300 hover:text-white'
             }`}
             title="Toggle Live Alert Feed"
           >
@@ -212,10 +212,10 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Simulator & Resilience Controls Drawer Trigger */}
           <button
             onClick={onToggleSimulator}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-medium transition ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-medium ${
               isSimulatorOpen
                 ? 'bg-cyan-500/20 border-cyan-500/40 text-cyan-300'
-                : 'bg-slate-800/80 border-slate-700 text-slate-300 hover:text-white'
+                : 'bg-slate-800 border-slate-700 text-slate-300 hover:text-white'
             }`}
             title="Resilience & High-Frequency Simulator Controls"
           >
@@ -234,9 +234,9 @@ export const Header: React.FC<HeaderProps> = ({
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 px-3.5 py-1.5 rounded-md text-xs font-medium transition ${
+                className={`flex items-center gap-2 px-3.5 py-1.5 rounded-md text-xs font-medium ${
                   isActive
-                    ? 'bg-slate-800 text-white shadow-sm border border-slate-700'
+                    ? 'bg-slate-800 text-white border border-slate-700'
                     : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900/60'
                 }`}
               >

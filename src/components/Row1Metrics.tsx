@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { ArrowUpRight, TrendingUp, DollarSign, Wallet, Percent, ArrowDownRight } from 'lucide-react';
 import { Sparkline } from './Sparkline';
+import { formatCurrency, getCurrencySymbol } from '../utils/currency';
 
 interface Row1MetricsProps {
   indexValue?: number;
@@ -9,6 +10,7 @@ interface Row1MetricsProps {
   currentValuation?: number;
   roiPercent?: number;
   sparklineData?: number[];
+  currency?: 'USD' | 'IDR';
 }
 
 export const Row1Metrics: React.FC<Row1MetricsProps> = ({
@@ -18,6 +20,7 @@ export const Row1Metrics: React.FC<Row1MetricsProps> = ({
   currentValuation = 10125,
   roiPercent = 28.2,
   sparklineData = [59200, 59450, 59380, 59720, 59650, 59900, 60021.21],
+  currency = 'USD',
 }) => {
   // Flash animation trigger when live valuation modifies
   const [valFlash, setValFlash] = useState<'up' | 'down' | null>(null);
@@ -42,7 +45,7 @@ export const Row1Metrics: React.FC<Row1MetricsProps> = ({
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
       {/* 1. Index / Market Overview Card */}
-      <div className="bg-white dark:bg-[#111827] rounded-2xl p-5 border border-slate-200/80 dark:border-slate-800 shadow-card hover:shadow-card-hover transition-all flex flex-col justify-between">
+      <div className="bg-white dark:bg-[#111827] rounded-xl p-5 border border-slate-200 dark:border-slate-700 flex flex-col justify-between">
         <div className="flex items-center justify-between">
           <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
             Market Overview
@@ -56,7 +59,7 @@ export const Row1Metrics: React.FC<Row1MetricsProps> = ({
         <div className="mt-3 flex items-baseline justify-between">
           <div>
             <div className="text-2xl lg:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight font-mono">
-              {indexValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              {formatCurrency(indexValue, currency)}
             </div>
             <div className="text-xs text-slate-400 mt-0.5">S&P Benchmark Index</div>
           </div>
@@ -67,7 +70,7 @@ export const Row1Metrics: React.FC<Row1MetricsProps> = ({
       </div>
 
       {/* 2. Your Investment Card */}
-      <div className="bg-white dark:bg-[#111827] rounded-2xl p-5 border border-slate-200/80 dark:border-slate-800 shadow-card hover:shadow-card-hover transition-all flex flex-col justify-between">
+      <div className="bg-white dark:bg-[#111827] rounded-xl p-5 border border-slate-200 dark:border-slate-700 flex flex-col justify-between">
         <div className="flex items-center justify-between">
           <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
             Your Investment
@@ -79,7 +82,7 @@ export const Row1Metrics: React.FC<Row1MetricsProps> = ({
 
         <div className="mt-3">
           <div className="text-2xl lg:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight font-mono">
-            ${investedCapital.toLocaleString('en-US')}
+            {formatCurrency(investedCapital, currency)}
           </div>
           <div className="text-xs text-slate-400 mt-0.5 flex items-center gap-1.5">
             <span>Capital invested</span>
@@ -90,7 +93,7 @@ export const Row1Metrics: React.FC<Row1MetricsProps> = ({
       </div>
 
       {/* 3. Current Value Card - Dynamic Live Flash */}
-      <div className="bg-white dark:bg-[#111827] rounded-2xl p-5 border border-slate-200/80 dark:border-slate-800 shadow-card hover:shadow-card-hover transition-all flex flex-col justify-between">
+      <div className="bg-white dark:bg-[#111827] rounded-xl p-5 border border-slate-200 dark:border-slate-700 flex flex-col justify-between">
         <div className="flex items-center justify-between">
           <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
             Current Value
@@ -110,11 +113,11 @@ export const Row1Metrics: React.FC<Row1MetricsProps> = ({
                 : 'text-slate-900 dark:text-white'
             }`}
           >
-            ${currentValuation.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            {formatCurrency(currentValuation, currency)}
           </div>
           <div className="text-xs text-slate-400 mt-0.5 flex items-center gap-1.5">
             <span className="text-emerald-600 dark:text-emerald-400 font-semibold font-mono">
-              +${(currentValuation - investedCapital).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              +{formatCurrency(currentValuation - investedCapital, currency)}
             </span>
             <span>overall profit</span>
           </div>
@@ -122,7 +125,7 @@ export const Row1Metrics: React.FC<Row1MetricsProps> = ({
       </div>
 
       {/* 4. ROI Card */}
-      <div className="bg-white dark:bg-[#111827] rounded-2xl p-5 border border-slate-200/80 dark:border-slate-800 shadow-card hover:shadow-card-hover transition-all flex flex-col justify-between">
+      <div className="bg-white dark:bg-[#111827] rounded-xl p-5 border border-slate-200 dark:border-slate-700 flex flex-col justify-between">
         <div className="flex items-center justify-between">
           <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
             ROI

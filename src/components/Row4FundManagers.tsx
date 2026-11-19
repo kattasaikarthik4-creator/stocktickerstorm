@@ -69,14 +69,11 @@ export const Row4FundManagers: React.FC<Row4Props> = ({ managers = DEFAULT_MANAG
     <div className="mt-8">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h2 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
-            <span>Schemes Managed By</span>
-            <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500">
-              Verified Fund Directors
-            </span>
+          <h2 className="text-lg font-bold text-slate-900 dark:text-white">
+            Fund Managers
           </h2>
           <p className="text-xs text-slate-400">
-            Institutional asset managers with verified track records
+            People managing the money
           </p>
         </div>
       </div>
@@ -85,7 +82,7 @@ export const Row4FundManagers: React.FC<Row4Props> = ({ managers = DEFAULT_MANAG
         {managers.map((mgr) => (
           <div
             key={mgr.id}
-            className="bg-white dark:bg-[#111827] rounded-2xl p-4 border border-slate-200/80 dark:border-slate-800 shadow-card hover:shadow-card-hover hover:border-emerald-500/40 transition-all flex flex-col justify-between group"
+            className="bg-white dark:bg-[#111827] rounded-xl p-4 border border-slate-200 dark:border-slate-700 flex flex-col justify-between"
           >
             <div>
               {/* Header with Avatar & Rating */}
@@ -94,11 +91,8 @@ export const Row4FundManagers: React.FC<Row4Props> = ({ managers = DEFAULT_MANAG
                   <img
                     src={mgr.avatar}
                     alt={mgr.name}
-                    className="w-12 h-12 rounded-xl object-cover ring-2 ring-slate-100 dark:ring-slate-800 group-hover:ring-emerald-500/50 transition-all"
+                    className="w-12 h-12 rounded-xl object-cover ring-2 ring-slate-200 dark:ring-slate-700"
                   />
-                  <div className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-emerald-500 text-slate-950 flex items-center justify-center text-[10px]">
-                    <ShieldCheck className="w-3 h-3 stroke-[2.5]" />
-                  </div>
                 </div>
 
                 <div className="min-w-0 flex-1">
@@ -119,9 +113,9 @@ export const Row4FundManagers: React.FC<Row4Props> = ({ managers = DEFAULT_MANAG
               </div>
 
               {/* Scheme Title */}
-              <div className="mt-3.5 p-2 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800">
+              <div className="mt-3.5 p-2 rounded-lg bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
                 <span className="text-[10px] uppercase font-bold text-slate-400 block tracking-wider">
-                  Managed Scheme
+                  Scheme
                 </span>
                 <span className="text-xs font-semibold text-slate-800 dark:text-slate-200 line-clamp-1 mt-0.5">
                   {mgr.scheme_name}
@@ -130,7 +124,7 @@ export const Row4FundManagers: React.FC<Row4Props> = ({ managers = DEFAULT_MANAG
             </div>
 
             {/* Performance Stats */}
-            <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+            <div className="mt-4 pt-3 border-t border-slate-200 dark:border-slate-700 flex items-center justify-between">
               <div>
                 <span className="text-[10px] text-slate-400 uppercase block font-semibold">
                   AUM
@@ -142,10 +136,9 @@ export const Row4FundManagers: React.FC<Row4Props> = ({ managers = DEFAULT_MANAG
 
               <div className="text-right">
                 <span className="text-[10px] text-slate-400 uppercase block font-semibold">
-                  3Y Annualized
+                  3Y Return
                 </span>
-                <span className="text-xs font-extrabold text-emerald-600 dark:text-emerald-400 font-mono flex items-center justify-end gap-0.5">
-                  <TrendingUp className="w-3 h-3" />
+                <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 font-mono">
                   +{mgr.three_year_return.toFixed(1)}%
                 </span>
               </div>
