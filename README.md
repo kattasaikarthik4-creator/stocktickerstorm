@@ -1,137 +1,146 @@
-# ⚡ TickerStorm - Real-Time Financial Market Intelligence & Investment Portfolio Dashboard
+# TickerStorm - Real-Time Financial Market Dashboard
 
-**TickerStorm** is a production-grade, high-performance financial intelligence web application engineered with **React**, **TypeScript**, **Tailwind CSS**, a **Node.js + Express + WebSocket backend**, an atomic **Redis Hot State and Stream Layer**, and a durable **SQLite database** (via `better-sqlite3`).
+TickerStorm is a high-performance financial intelligence web application built with React, TypeScript, Tailwind CSS, Node.js/Express, WebSockets, Redis, and SQLite.
 
-Styled precisely after institutional light-mode financial layouts, TickerStorm features clean white/grey surfaces, emerald green graphs, rounded cards, dark purple/slate collapsible icon sidebar navigation, and sub-millisecond real-time market streaming.
+## Features
 
----
+**Real-Time Market Data**
+- 2,000+ instruments streaming at configurable rates (up to 5,000 updates/second)
+- Sub-millisecond WebSocket feed with automatic backpressure coalescing
+- Live price charts with multiple timeframes (1d, 7d, 1m, 1y, max)
 
-## 🎨 UI/UX Layout & Sections (Matching Reference Design)
+**Portfolio Management**
+- Live portfolio valuation with real-time P&L
+- Asset allocation breakdown (equities, crypto, funds)
+- Risk metrics: beta, Sharpe ratio, volatility
+- Custom target goals with progress tracking
 
-1. **Global Shell & Sidebar Navigation:**
-   - **Left Sidebar (Collapsible):** Dark purple/slate (`#1E1638`) vertical navigation bar containing Home, Portfolio, Analytics, Watchlist, Settings, and Notifications.
-   - **Top Header Bar:** Global search (`⌘K`), real-time WebSocket connection state, ticks/second telemetry, currency toggle (`IDR (Rp)` / `USD ($)`), simulator controls, alert creator, notification center, light/dark theme switch, and user profile avatar.
+**Watchlist & Screening**
+- Personal watchlist with star/unstar actions
+- Full market screener (2,000+ symbols) with search, sort, and filter
+- Top gainers/losers with real-time ranking
 
-2. **Top Metric Overview Cards (Row 1):**
-   - **Market Overview Card:** S&P benchmark index value (`60,021.21`, `+1.42%`) with mini emerald line graph.
-   - **Your Investment Card:** Total invested capital (`$8,032`).
-   - **Current Value Card:** Total portfolio valuation (`$10,125`).
-   - **ROI Card:** Net Return on Investment with positive emerald badge (`+28.2%`).
+**Price Alerts**
+- Configurable threshold alerts (above/below)
+- Instant WebSocket notifications when triggered
+- Custom labels for strategy notes
 
-3. **Investment Growth & Portfolio Distribution (Row 2):**
-   - **Investment Growth Area Chart:** Emerald-green gradient area chart tracking historical portfolio value over months (May through Nov) with interactive hover tooltips and timeframe selectors (`1M`, `6M`, `1Y`, `ALL`).
-   - **Your Portfolio Donut Chart:** Visual breakdown of fund distribution:
-     - Large Cap Funds (45% - `$4,556.25`)
-     - Diversified Funds (35% - `$3,543.75`)
-     - Debt Funds (20% - `$2,025.00`)
-   - **Target Portfolio Cards:** Stacked cards for custom goals:
-     - **"Dream House"**: `$545,569` with `+2.5%` profit and progress bar towards $700k goal.
-     - **"My Travel"**: `$345,155` with `+4.5%` profit and progress bar towards $500k goal.
+**Currency Support**
+- Toggle between USD ($) and IDR (Rp)
+- All prices convert in real-time across the dashboard
 
-4. **Interactive Stock Watchlists & Crypto Cards (Row 3):**
-   - **Main Watchlist Panel:** Major indices/stocks like **S&P 500** (`4,500.48`), **NASDAQ**, **NVDA**, **AAPL**, **MSFT**, **TSLA** with live updating prices, timeframe tabs (`1d`, `7d`, `1m`, `1y`, `max`), and large live-updating area chart reflecting real-time WebSocket ticks.
-   - **Side Crypto Cards:**
-     - **Bitcoin (BTC):** `Rp 459,852` (or `$64,850 USD`), `+4.95%`, mini live green sparkline, `24h` badge.
-     - **Dogecoin (DOGE):** `Rp 987,226` (or `$0.1425 USD`), `+7.85%`, mini live green sparkline, `24h` badge.
+**Authentication**
+- Secure user registration and login
+- Password hashing with scrypt
+- JWT-based session management
+- Multi-account support
 
-5. **Schemes Managed By (Row 4):**
-   - Horizontal card list displaying professional fund managers:
-     - **Kevin Black - Manager** (Alpha Growth Opportunity Scheme, `$1.2B AUM`, `★ 4.9`, `+24.6%` 3Y Return, `14 yrs exp`).
-     - **Sarah Jenkins - Senior Portfolio Lead** (Horizon Bluechip Innovation Scheme, `$950M AUM`, `★ 4.8`, `+22.1%` 3Y Return).
-     - **David Chen - Quantitative Lead** (Apex Global Macro Strategies, `$1.8B AUM`, `★ 5.0`, `+28.4%` 3Y Return).
-     - **Elena Rostova - Director of Equities** (Clean Planet & Emerging Tech Scheme, `$740M AUM`, `★ 4.7`, `+19.8%` 3Y Return).
+## Tech Stack
 
-6. **Detailed Fund Tables (Row 5):**
-   - **"Sectors Holding In This Online Fund":** Technology (`XLK`, 38.5%, `$3,898.12`), Financial Services (`XLF`, 22.1%, `$2,237.62`), Healthcare & Biotech (`XLV`, 16.4%, `$1,660.50`), Energy & Clean Tech (`XLE`, 12.2%, `$1,235.25`), Consumer Discretionary (`XLY`, 10.8%, `$1,093.51`).
-   - **"Companies Holding in This Online Fund":**
-     - **Layzoo Ltd.** (`LYZ`, 24.2%, `$1,420.50`)
-     - **NightBlink Ltd.** (`NBL`, 20.1%, `$1,180.20`)
-     - **Lcyflame Ltd.** (`LCY`, 16.1%, `$945.80`)
-     - **Feelopie Services Ltd.** (`FLP`, 13.9%, `$820.00`)
-     - **Grofler Ltd.** (`GRF`, 11.6%, `$685.40`)
+| Layer | Technology |
+|-------|------------|
+| Frontend | React 18, TypeScript, Tailwind CSS, Vite |
+| Backend | Node.js, Express, WebSocket (ws) |
+| Real-Time State | Redis (hashes, sorted sets, streams, Lua scripts) |
+| Database | SQLite (better-sqlite3) |
+| Auth | crypto.scryptSync, Bearer tokens |
 
----
+## Architecture
 
-## ⚡ Backend & Real-Time Engineering
+- **Market Simulator**: Generates synthetic ticks for 2,000 symbols
+- **Redis Hot State**: Hashes for quotes, sorted sets for rankings, streams for event log
+- **Alert Engine**: Atomic Lua scripts evaluate thresholds without duplicates
+- **WebSocket Server**: Fans out updates with 64KB backpressure coalescing
+- **SQLite**: Persistent storage for users, portfolios, alerts, fund data
 
-1. **Stock & Market Simulator:**
-   - Background Node.js process simulating 2,000 instruments at up to 5,000 updates/second.
-   - Event payload: `{ symbol, price, previousClose, change, changePercent, sequenceNumber, timestamp, volume, high, low }`.
+## Getting Started
 
-2. **Redis Hot State & Stream Layer:**
-   - **Hashes (`price:<symbol>`):** Constant-time lookup of latest ticker quotes.
-   - **Sorted Sets (`rank:gainers`, `rank:losers`):** Instant top movers calculation using Redis `ZREVRANGE` and `ZRANGE`.
-   - **Redis Streams (`prices:events`):** High-throughput log of all price updates.
-   - **Atomic Lua Script Threshold Alerts:** Redis Lua script atomically checks price crossings without duplicate alerts on consecutive ticks and publishes to `alerts:events`.
-   - **Dual-Mode Engine:** Connects to live Redis if available; automatically provides a high-performance in-memory Redis implementation if running standalone on Windows without Redis installed.
+### Prerequisites
+- Node.js 18+
+- npm or bun
 
-3. **WebSocket Fan-Out & Slow-Client Backpressure Coalescing:**
-   - Stateless WebSocket connections with automatic backpressure detection: if `socket.bufferedAmount > 64KB`, the server coalesces updates per symbol and flushes only the latest pending tick.
-
-4. **Durable Relational DB (SQLite):**
-   - Tables: `users`, `portfolios`, `watchlists`, `alerts`, `fund_sectors`, `fund_companies`, `fund_managers`.
-
----
-
-## 🔐 User Authentication & Registration
-
-TickerStorm includes a full-stack, secure authentication and user management system:
-- **Sign In & User Registration Modal (`AuthModal.tsx`):**
-  - Seamless tab toggle between **Sign In** and **Create Account**.
-  - One-click **Demo Login** auto-fill (`alex.morgan@tickerstorm.io` / `password123`).
-  - Interactive **Password Strength Meter** during registration.
-  - Password visibility toggle (show/hide).
-- **Backend Security & Relational Persistence:**
-  - Password hashing via Node.js built-in `crypto.scryptSync` with cryptographic salt.
-  - Automatic initialization of starter portfolios and watchlists in SQLite upon registration.
-  - REST endpoints:
-    - `POST /api/auth/register` - Create user account and receive token
-    - `POST /api/auth/login` - Authenticate with email/password
-    - `GET /api/auth/me` - Verify active bearer session
-    - `POST /api/auth/logout` - Invalidate active session
-- **User Account Switcher:**
-  - Integrated profile dropdown in the top Navbar and Sidebar allowing users to switch accounts, register a new account, or log out.
-
----
-
-## 🚀 Running the Application
-
-### 1. Start the Full-Stack Server
+### Install Dependencies
 ```bash
-# Starts both Express API, WebSocket Server, and serves production frontend
-npm run server
+npm install
 ```
-Access the dashboard at: `http://localhost:8080`
 
-### 2. Run with Vite Frontend Dev Server (HMR)
+### Run Development (Frontend + Backend)
 ```bash
-# In another terminal:
+# Terminal 1 - Backend API + WebSocket
+npm run server
+
+# Terminal 2 - Vite dev server with HMR
 npm run dev
 ```
-Access Vite HMR at: `http://localhost:5173`
 
----
+- Backend: http://localhost:8080
+- Frontend (dev): http://localhost:3000 (proxies `/api` to backend)
 
-## 📡 REST API & WebSocket Reference
+### Production Build
+```bash
+npm run build
+npm run server
+```
+Serves the built frontend from Express at http://localhost:8080
 
-### Real-Time Stock Market APIs:
-- `GET /api/stocks` - Paginated 2,000 symbol market catalog with filters (`?search=...&limit=50&offset=0&sortBy=volume&order=desc&minPrice=...&maxPrice=...`)
-- `GET /api/stocks/:symbol` - Deep single stock intelligence (live quote, Level 2 order book depth, market cap, P/E ratio, Beta, 52-week range, and RSI/MACD technical signals)
-- `GET /api/stocks/:symbol/history` - Historical timeframe data points (`?timeframe=1d|7d|1m|1y`)
-- `GET /api/stocks/search/autocomplete` - Fast symbol & company search lookup (`?q=...`)
+## Project Structure
 
-### Portfolio & Fund APIs:
-- `GET /api/health` - Server health, client count, sequence watermark
-- `GET /api/portfolio` - Top metrics and target portfolios ("Dream House", "My Travel")
-- `POST /api/portfolio/targets` - Create dynamic target portfolio goal
-- `GET /api/fund/sectors` - Sectors holding in online fund
-- `GET /api/fund/companies` - Companies holding in online fund (Layzoo, NightBlink, etc.)
-- `GET /api/fund/managers` - Fund managers metadata
+```
+src/
+├── components/       # React components (dashboard, tables, modals, charts)
+├── context/          # React context (Auth, Market data)
+├── hooks/            # Custom hooks (virtual scroll)
+├── services/         # WebSocket, mock data, mock server
+├── types/            # TypeScript types
+├── utils/            # Currency formatting, audio
+├── App.tsx           # Main app with routing/layout
+└── main.tsx          # Entry point
 
-### Authentication & Alerts:
-- `POST /api/auth/register` - Create user account
-- `POST /api/auth/login` - User authentication
-- `GET /api/auth/me` - Active session profile verification
-- `POST /api/auth/logout` - Session invalidation
-- `GET /api/alerts` & `POST /api/alerts` & `DELETE /api/alerts/:id` - Price threshold alert management
-- `WS ws://localhost:8080` - Real-time market feed with backpressure coalescing
+server/
+├── server.js         # Express + WebSocket server
+├── db.js             # SQLite schema and queries
+├── redisLayer.js     # Redis hashes, sorted sets, streams, Lua alerts
+└── simulator.js      # 2,000 symbol market simulator
+```
+
+## API Endpoints
+
+### Market Data
+- `GET /api/stocks` - Paginated catalog with search/sort/filter
+- `GET /api/stocks/:symbol` - Deep quote with order book, fundamentals, technicals
+- `GET /api/stocks/:symbol/history` - Historical candles
+- `GET /api/stocks/search/autocomplete` - Fast symbol search
+
+### Portfolio
+- `GET /api/portfolio` - Overview metrics and target goals
+- `POST /api/portfolio/targets` - Create target goal
+
+### Fund Data
+- `GET /api/fund/sectors` - Sector allocations
+- `GET /api/fund/companies` - Top holdings
+
+### Authentication
+- `POST /api/auth/register` - Create account
+- `POST /api/auth/login` - Login
+- `GET /api/auth/me` - Verify session
+- `POST /api/auth/logout` - Logout
+
+### Alerts
+- `GET /api/alerts` - List alerts
+- `POST /api/alerts` - Create alert
+- `DELETE /api/alerts/:id` - Delete alert
+
+### WebSocket
+- `ws://localhost:8080` - Real-time feed (snapshot, ticker updates, top movers, alerts)
+
+## Configuration
+
+Environment variables (`.env`):
+```
+PORT=8080
+REDIS_URL=redis://localhost:6379  # Optional, falls back to in-memory Redis
+```
+
+## License
+
+MIT
