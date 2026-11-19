@@ -11,15 +11,18 @@ import {
   BellPlus,
   BarChart2,
 } from 'lucide-react';
+import { formatCurrency } from '../utils/currency';
 
 interface GainersLosersPanelProps {
   onOpenAlertModalForStock: (stock: Stock) => void;
   onSelectStock: (stock: Stock) => void;
+  currency?: 'USD' | 'IDR';
 }
 
 export const GainersLosersPanel: React.FC<GainersLosersPanelProps> = ({
   onOpenAlertModalForStock,
   onSelectStock,
+  currency = 'USD',
 }) => {
   const {
     topGainers,
@@ -93,7 +96,7 @@ export const GainersLosersPanel: React.FC<GainersLosersPanelProps> = ({
         <div className="flex items-center gap-3">
           <div className="text-right font-mono">
             <div className="text-sm font-semibold text-slate-100">
-              ${mover.price.toFixed(2)}
+              {formatCurrency(mover.price, currency)}
             </div>
             <div
               className={`flex items-center justify-end gap-0.5 text-xs font-medium ${

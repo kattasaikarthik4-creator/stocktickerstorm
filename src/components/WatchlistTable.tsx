@@ -15,17 +15,20 @@ import {
   TrendingUp,
   TrendingDown,
 } from 'lucide-react';
+import { formatCurrency } from '../utils/currency';
 
 interface WatchlistTableProps {
   mode: 'watchlist' | 'screener';
   onOpenAlertModalForStock: (stock: Stock) => void;
   onSelectStock: (stock: Stock) => void;
+  currency?: 'USD' | 'IDR';
 }
 
 export const WatchlistTable: React.FC<WatchlistTableProps> = ({
   mode,
   onOpenAlertModalForStock,
   onSelectStock,
+  currency = 'USD',
 }) => {
   const {
     stocks,
@@ -195,7 +198,7 @@ export const WatchlistTable: React.FC<WatchlistTableProps> = ({
           onClick={() => setSort('price')}
           className="col-span-3 sm:col-span-2 flex items-center justify-end gap-1 cursor-pointer group hover:text-slate-200 transition"
         >
-          <span>Price ($)</span>
+          <span>Price</span>
           {renderSortIndicator('price')}
         </div>
 
@@ -321,7 +324,7 @@ export const WatchlistTable: React.FC<WatchlistTableProps> = ({
                             : 'text-slate-100'
                         }`}
                       >
-                        ${stock.price.toFixed(2)}
+                        {formatCurrency(stock.price, currency)}
                       </span>
                     </div>
 
